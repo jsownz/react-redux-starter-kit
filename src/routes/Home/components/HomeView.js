@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { browserHistory } from 'react-router'
+// import { browserHistory } from 'react-router'
+import Character from '../../Characters/components/Characters'
 import './HomeView.scss'
 
 class HomeView extends Component {
@@ -7,6 +8,13 @@ class HomeView extends Component {
     super(props)
     this.state = {
       auth_token: ''
+    }
+    let authToken = localStorage.getItem('swauthtoken')
+    if (authToken !== null) {
+      this.state = {
+        auth_token: authToken
+      }
+      this.getCharacters()
     }
   }
 
@@ -26,12 +34,14 @@ class HomeView extends Component {
       this.setState({
         auth_token: responseJson.auth_token
       })
+      localStorage.setItem('swauthtoken', this.state.auth_token)
       this.getCharacters()
     })
     .catch((error) => {
       console.error(error)
     })
   }
+
   getCharacters () {
     fetch('http://localhost:3000/my_user.json', {
       method: 'GET',
@@ -49,6 +59,7 @@ class HomeView extends Component {
       console.error(error)
     })
   }
+
   render () {
     let mainBody = (
       <div>
@@ -65,9 +76,14 @@ class HomeView extends Component {
       )
     }
     if (this.state.characters) {
+      let charactersList = this.state.characters.map(function (userChar, i) {
+        // console.log(userChar)
+        return <Character key={i} name={userChar.character.name} />
+      })
       mainBody = (
         <div>
           Characters
+          { charactersList }
         </div>
       )
     }

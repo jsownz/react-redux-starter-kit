@@ -1,18 +1,22 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 // import './Character.scss'
 
 class Character extends Component {
   // constructor (props) {
   //   super(props)
-  //   this.state = {
-  //     auth_token: ''
-  //   }
+  //   this.state = {}
   // }
+
   render () {
-    return (<div>
-      Characters
+    return (<div className='character'>
+      { this.props.name }
     </div>)
   }
+}
+
+Character.propTypes = {
+  name: PropTypes.string.isRequired
 }
 
 export default Character
