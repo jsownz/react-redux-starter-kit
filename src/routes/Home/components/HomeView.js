@@ -23,22 +23,59 @@ class HomeView extends Component {
       })
     }).then((response) => response.json())
     .then((responseJson) => {
-      console.log(responseJson.auth_token)
       this.setState({
         auth_token: responseJson.auth_token
       })
-      browserHistory.push('/characters')
+      this.getCharacters()
+    })
+    .catch((error) => {
+      console.error(error)
+    })
+  }
+  getCharacters () {
+    fetch('http://localhost:3000/my_user.json', {
+      method: 'GET',
+      headers: {
+        'Authorization': this.state.auth_token
+      }
+    }).then((response) => response.json())
+    .then((responseJson) => {
+      // console.log(responseJson)
+      this.setState({
+        characters: responseJson
+      })
     })
     .catch((error) => {
       console.error(error)
     })
   }
   render () {
-    return (<div>
-      <input type='text' id='login-email' placeholder='email' />
-      <input type='password' id='login-password' placeholder='password' />
-      <button id='x-btn-send-login' onClick={() => this.sendLogin()}>Login</button>
-    </div>)
+    let mainBody = (
+      <div>
+        <input type='text' id='login-email' placeholder='email' />
+        <input type='password' id='login-password' placeholder='password' />
+        <button id='x-btn-send-login' onClick={() => this.sendLogin()}>Login</button>
+      </div>
+    )
+    if (this.state.auth_token) {
+      mainBody = (
+        <div>
+          Loading...
+        </div>
+      )
+    }
+    if (this.state.characters) {
+      mainBody = (
+        <div>
+          Characters
+        </div>
+      )
+    }
+    return (
+      <div>
+        { mainBody }
+      </div>
+    )
   }
 }
 
